@@ -13,4 +13,7 @@ def request_password_reset_email(request):
     token = generate_reset_token(email)
     send_email_reset_password(email, token.token)
 
+    # TODO: удалить после тестирования
     return Response({'token': token.token})
+
+

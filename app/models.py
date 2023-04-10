@@ -82,7 +82,12 @@ class ResetPasswordToken(models.Model):
     # TODO: сделать удаление токена через 1 час
 
     def is_expired(self):
-        return self.created_at + timedelta(hours=1) < datetime.now()
+        future_time = self.created_at + timedelta(hours=1)
+        now_time = datetime.now(tz=None) - timedelta(hours=3)
+        # TODO: костыль
+        now_time = now_time.replace(tzinfo=None)
+        future_time = future_time.replace(tzinfo=None)
+        return now_time > future_time
 
     def is_valid(self):
         return not self.is_expired()

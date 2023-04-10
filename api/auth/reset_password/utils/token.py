@@ -25,7 +25,7 @@ def get_token(token_str):
         raise TokenValidationFailed()
 
 
-def check_token(token, raise_exception=True):
+def check_token(token: ResetPasswordToken, raise_exception=True):
     is_valid = token.is_valid()
     if not is_valid and raise_exception:
         raise TokenValidationFailed()
