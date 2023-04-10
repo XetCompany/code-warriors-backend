@@ -1,5 +1,5 @@
 from django.http import Http404
-
+from rest_framework.exceptions import PermissionDenied
 from app.models import Request
 
 
@@ -31,4 +31,10 @@ def check_executor(obj):
         executor_username = None
 
     return executor_id, executor_username
+
+
+def check_user_is_creator(request, request_object):
+    if request.user != request_object.creator:
+        raise PermissionDenied("You do not have permission to delete this request")
+    return None
 
