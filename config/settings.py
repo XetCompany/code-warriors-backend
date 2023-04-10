@@ -38,8 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'app.apps.AppConfig',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.ru'
@@ -48,6 +55,10 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = 'xetpy1030@mail.ru'
 EMAIL_HOST_PASSWORD = 'yG7z285zWngHZa0cCjEk'
 EMAIL_USE_SSL = True
+
+AUTHENTICATION_BACKENDS = [
+    'api.auth.model_auth.CustomModelBackend',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

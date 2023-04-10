@@ -35,7 +35,7 @@ class Request(models.Model):
 class Notification(models.Model):
     """Уведомления которая отправляет сообщения и отслеживания прочитал ли пользователь"""
     user = models.ForeignKey(verbose_name='Пользователь', to='User',
-                             on_delete=models.CASCADE,)
+                             on_delete=models.CASCADE, )
     message = models.CharField(verbose_name='Сообщение', max_length=255)
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     is_read = models.BooleanField(verbose_name='Прочитано', default=False)
@@ -47,6 +47,7 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.message
+
 
 class User(AbstractUser):
     """Пользователь способный пройти авторизацию либо регистрацию по логину либо e-mail'у"""
