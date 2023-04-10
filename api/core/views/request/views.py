@@ -3,33 +3,40 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.core.views.request.serializers import RequestSerializer
+from api.core.views.request.serializers import RequestListOrDetailSerializer, RequestCreateOrUpdateSerializer
 from api.core.views.request.utils.request import get_request_object, check_user_is_creator
 from app.models import Request, Notification
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
-class RequestModelViewSet(ModelViewSet):
+class RequestListOrDetailModelViewSet(ModelViewSet):
     queryset = Request.objects.all()
-    serializer_class = RequestSerializer
+    serializer_class = RequestListOrDetailSerializer
     permission_classes = [AllowAny]
+
+
+class RequestCreateOrUpdateModelViewSet(ModelViewSet):
+    queryset = Request.objects.all()
+    serializer_class = RequestCreateOrUpdateSerializer
+    permission_classes = [IsAuthenticated]
 
 
 @api_view(['POST'])
 def add_response_to_request(request, pk):
-    request_object = get_request_object(pk)
-    request_object.responses.add(request.user.id)
+    request_object = Request.objects.get(pk=pk)
+    request_object.responses.add(request.user)
 
-    creator_id = request_object.creator
-    Notification.objects.create(
-        user=creator_id,
-        # TODO: Поменять вывод
-        message=f'{creator_id.username} откликнулся на ваш заказ'
+    creator = request_object.creator
+
+    notification = Notification.objects.create(
+        user=creator,
+        message=f'{request.user.username} откликнулся на ваш заказ'
     )
 
-    return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)
+    creator.notifications.add(notification)
 
+    return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)
 
 @permission_classes((IsAuthenticated,))
 @api_view(['DELETE'])
