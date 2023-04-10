@@ -1,8 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from app.models import Request, Notification, User
+from app.models import CategoryRequest, Photo, Video, Request, Notification, User
 
+admin.site.register(CategoryRequest)
+admin.site.register(Photo)
+admin.site.register(Video)
 admin.site.register(Request)
 admin.site.register(Notification)
 
@@ -18,6 +21,7 @@ class CustomUserAdmin(UserAdmin):
             'fullname',
             'phone',
             'description',
+            'notifications',
             'password')
         }),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
@@ -34,6 +38,7 @@ class CustomUserAdmin(UserAdmin):
                 'description',
                 'password1',
                 'password2',
+                'notifications',
                 'is_staff',
                 'is_active'
             )
