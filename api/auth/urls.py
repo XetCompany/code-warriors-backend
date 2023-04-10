@@ -14,4 +14,5 @@ login_urlpatterns = [
 urlpatterns = [
     path('login/', include(login_urlpatterns)),
     path('register/', views.register_handler),
+    path('reset_password/', include('api.auth.reset_password.urls')),
 ]
