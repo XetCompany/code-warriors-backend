@@ -1,19 +1,14 @@
 from rest_framework import serializers
 
 from api.core.views.request.utils.request import check_executor, check_creator
-from app.models import Request, User
+from api.core.views.user.serializers import UserSerializer
+from app.models import Request
 
 
-class ResponseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username')
-
-
-class RequestSerializer(serializers.ModelSerializer):
+class RequestListOrDetailSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField()
     executor = serializers.SerializerMethodField()
-    responses = ResponseSerializer(many=True)
+    responses = UserSerializer(many=True)
 
     class Meta:
         model = Request
@@ -34,3 +29,9 @@ class RequestSerializer(serializers.ModelSerializer):
             'id': executor_id,
             'username': executor_username,
         }
+
+
+class RequestCreateOrUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Request
+        fields = '__all__'
