@@ -32,6 +32,8 @@ class CustomUserAdmin(UserAdmin):
                 'fullname',
                 'phone',
                 'description',
+                'password1',
+                'password2',
                 'is_staff',
                 'is_active'
             )
