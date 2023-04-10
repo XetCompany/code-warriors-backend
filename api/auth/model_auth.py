@@ -5,16 +5,25 @@ UserModel = get_user_model()
 
 
 class CustomModelBackend(ModelBackend):
-    def authenticate(self, request, username=None, email=None, password=None, **kwargs):
-        if all([username, email]):
-            return
-        if not any([username, email]):
-            return
-        login = {'username': username} if username else {'email': email}
-        if login is None or password is None:
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        if username is None:
+            username = kwargs.get(UserModel.USERNAME_FIELD)
+        if username is None or password is None:
             return
         try:
-            user = UserModel._default_manager.get(**login)
+            user_email = UserModel._default_manager.filter(email=username)
+            user_username = UserModel._default_manager.filter(username=username)
+
+            if all([user_email.exists(), user_username.exists()]):
+                return
+
+            if user_email.exists():
+                user = user_email[0]
+            elif user_username.exists():
+                user = user_username[0]
+            else:
+                raise UserModel.DoesNotExist
+
         except UserModel.DoesNotExist:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a nonexistent user (#20760).

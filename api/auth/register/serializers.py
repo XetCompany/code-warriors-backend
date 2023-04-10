@@ -1,11 +1,12 @@
 from django.contrib.auth.password_validation import validate_password as django_validate_password
 from rest_framework import serializers
 
+from api.auth.register.validators import NotEmailValidator
 from app.models import User
 
 
 class RegisterSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=255)
+    username = serializers.CharField(max_length=255, validators=[NotEmailValidator()])
     email = serializers.EmailField(max_length=255)
     password = serializers.CharField(max_length=255, write_only=True)
 
