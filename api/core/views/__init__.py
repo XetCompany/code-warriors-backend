@@ -1,2 +1,3 @@
 from .request.views import RequestModelViewSet
-from .request.views import add_response_to_request, delete_request_by_pk
+from .request.views import add_response_to_request, delete_request_by_pk, end_request
+from .files.views import ImageView, VideoView

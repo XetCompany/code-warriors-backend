@@ -40,3 +40,15 @@ def delete_request_by_pk(request, pk):
     request_object.delete()
 
     return Response({"data": {"message": "deleted success"}}, status=status.HTTP_204_NO_CONTENT)
+
+
+@permission_classes((IsAuthenticated,))
+@api_view(['POST'])
+def end_request(request, pk):
+    request_object = get_request_object(pk)
+    check_user_is_creator(request, request_object)
+
+    request_object.is_active = False
+    request_object.save()
+
+    return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)

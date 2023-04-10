@@ -6,6 +6,45 @@ from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+class CategoryRequest(models.Model):
+    """Категория запроса"""
+    name = models.CharField(verbose_name='Название категории', max_length=255)
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Категория запроса'
+        verbose_name_plural = 'Категории запросов'
+
+    def __str__(self):
+        return self.name
+
+
+class Photo(models.Model):
+    """Фотографии"""
+    photo = models.ImageField(verbose_name='Фотография', upload_to='photos')
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Фотография'
+        verbose_name_plural = 'Фотографии'
+
+    def __str__(self):
+        return f'Фотография {self.id}'
+
+
+class Video(models.Model):
+    """Видео"""
+    video = models.FileField(verbose_name='Видео', upload_to='videos')
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Видео'
+        verbose_name_plural = 'Видео'
+
+    def __str__(self):
+        return f'Видео {self.id}'
+
+
 class Request(models.Model):
     """Сведения о запросе на оказание услуг"""
     creator = models.ForeignKey(verbose_name='Заказчик', to='User',
@@ -19,6 +58,10 @@ class Request(models.Model):
     price_to = models.IntegerField(verbose_name='Желаемая цена до', blank=True, null=True)
     deadline_in_days = models.IntegerField(verbose_name='Сроки оказания услуг')
     place = models.CharField(verbose_name='Место оказания услуг', max_length=255)
+    category = models.ForeignKey(verbose_name='Категория', to='CategoryRequest',
+                                 on_delete=models.CASCADE)
+    photos = models.ManyToManyField(verbose_name='Фотографии', to='Photo', blank=True)
+    videos = models.ManyToManyField(verbose_name='Видео', to='Video', blank=True)
 
     responses = models.ManyToManyField(verbose_name='Отклики', to='User', blank=True,
                                        related_name='responses')
