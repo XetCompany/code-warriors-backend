@@ -76,7 +76,7 @@ class Request(models.Model):
         verbose_name_plural = 'Запросы'
 
     def __str__(self):
-        return f'{self.id} and {self.title}'
+        return f'id: {self.id}, title: {self.title}'
 
 
 class Notification(models.Model):
