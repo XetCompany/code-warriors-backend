@@ -14,5 +14,3 @@ def request_password_reset_email(request):
     send_email_reset_password(email, token.token)
 
     return Response({'token': token.token})
-
-
