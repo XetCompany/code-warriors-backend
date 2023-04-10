@@ -37,7 +37,7 @@ class Request(models.Model):
 
 
 class Notification(models.Model):
-    """Уведомления которая отправляет сообщения и отслеживания прочитал ли пользователь"""
+    """Уведомление которое отправляется и отслеживаются прочитал ли пользователь"""
     user = models.ForeignKey(verbose_name='Пользователь', to='User',
                              on_delete=models.CASCADE)
     message = models.CharField(verbose_name='Сообщение', max_length=255)
@@ -50,7 +50,7 @@ class Notification(models.Model):
         verbose_name_plural = 'Уведомления'
 
     def __str__(self):
-        return self.message
+        return f'{self.user.username} <{self.message}>'
 
 
 class User(AbstractUser):
