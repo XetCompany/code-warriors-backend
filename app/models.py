@@ -48,6 +48,13 @@ class Video(models.Model):
         return f'Видео {self.id}'
 
 
+class Response(models.Model):
+    user = models.ForeignKey(verbose_name='Пользователь', to='User', on_delete=models.CASCADE)
+    description = models.TextField(verbose_name='Описание', blank=True, null=True)
+    photos = models.ManyToManyField(verbose_name='Фотографии', to='Photo', blank=True)
+    videos = models.ManyToManyField(verbose_name='Видео', to='Video', blank=True)
+
+
 class Request(models.Model):
     """Сведения о запросе на оказание услуг"""
     creator = models.ForeignKey(verbose_name='Заказчик', to='User',
@@ -66,7 +73,7 @@ class Request(models.Model):
     photos = models.ManyToManyField(verbose_name='Фотографии', to='Photo', blank=True)
     videos = models.ManyToManyField(verbose_name='Видео', to='Video', blank=True)
 
-    responses = models.ManyToManyField(verbose_name='Отклики', to='User', blank=True,
+    responses = models.ManyToManyField(verbose_name='Отклики', to='Response', blank=True,
                                        related_name='responses')
 
     is_active = models.BooleanField(verbose_name='Активен', default=True)

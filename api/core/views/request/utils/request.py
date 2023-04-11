@@ -33,6 +33,17 @@ def check_executor(obj):
     return executor_id, executor_username
 
 
+def check_category(obj):
+    if obj.category:
+        category_id = obj.category.id
+        category_name = obj.category.name
+    else:
+        category_id = None
+        category_name = None
+
+    return category_id, category_name
+
+
 def check_user_is_creator(request, request_object):
     if request.user != request_object.creator:
         raise PermissionDenied("У вас нет доступа к этому дейстивию")

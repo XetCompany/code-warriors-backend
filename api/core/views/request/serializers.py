@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.core.views.request.utils.request import check_executor, check_creator
+from api.core.views.request.utils.request import check_executor, check_creator, check_category
 from api.core.views.user.serializers import UserSerializer
 from app.models import Request
 
@@ -34,7 +34,12 @@ class RequestListOrDetailSerializer(serializers.ModelSerializer):
         return obj.videos.values_list('video', flat=True)
 
     def get_category(self, obj):
-        return obj.category.name
+        category_id, category_name = check_category(obj)
+
+        return {
+            'id': category_id,
+            'name': category_name
+        }
 
     def get_executor(self, obj):
         executor_id, executor_username = check_executor(obj)

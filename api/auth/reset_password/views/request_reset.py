@@ -11,7 +11,7 @@ from utils.data import get_data_value
 def request_password_reset_email(request):
     email = get_data_value(request, 'email')
     token = generate_reset_token(email)
-    send_email_reset_password(email, token.token, token.user.username)
+    send_email_reset_password(email, token.user.username, token.token)
 
     # TODO: удалить после тестирования
     return Response({'token': token.token})
