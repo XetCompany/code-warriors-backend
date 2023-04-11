@@ -27,4 +27,8 @@ urlpatterns = [
     path('notifications/read_all/', views.read_all_notifications),
 
     path('rating/', views.rating_of_users),
+
+    path('reviews/<int:user_id>/', views.ReviewListAPIView.as_view(), name='review-list'),
+    path('reviews/create/', views.ReviewCreateAPIView.as_view(), name='review-create'),
+    path('reviews/l/<int:id>/', views.ReviewRetrieveUpdateDestroyAPIView.as_view(), name='review-detail'),
 ]

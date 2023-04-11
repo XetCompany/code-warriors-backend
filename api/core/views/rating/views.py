@@ -11,6 +11,7 @@ def rating_of_users(request):
     data = {'users': []}
     for user in users:
         data['users'].append({
+            'id': user.id,
             'username': user.username,
             'avg_rating': user.avg_rating,
         })

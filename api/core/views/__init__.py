@@ -10,3 +10,5 @@ from .categories.views import get_categories
 from .notifications.views import get_user_notifications, read_all_notifications
 
 from .rating.views import rating_of_users
+
+from .review.views import ReviewListAPIView, ReviewCreateAPIView, ReviewRetrieveUpdateDestroyAPIView
