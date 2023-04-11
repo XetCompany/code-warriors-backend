@@ -15,6 +15,12 @@ class RequestListOrDetailModelViewSet(ModelViewSet):
     serializer_class = RequestListOrDetailSerializer
     permission_classes = [AllowAny]
 
+@api_view(['GET'])
+def get_requests_by_user_id(request, user_id):
+    requests = Request.objects.filter(creator_id=user_id)
+    serializer = RequestListOrDetailSerializer(requests, many=True)
+    return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+
 
 class RequestCreateOrUpdateModelViewSet(ModelViewSet):
     queryset = Request.objects.all()
@@ -27,6 +33,7 @@ class RequestCreateOrUpdateModelViewSet(ModelViewSet):
 
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated,))
 def add_response_to_request(request, pk):
     request_object = Request.objects.get(pk=pk)
     request_object.responses.add(request.user)
@@ -42,8 +49,9 @@ def add_response_to_request(request, pk):
 
     return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)
 
-@permission_classes((IsAuthenticated,))
+
 @api_view(['DELETE'])
+@permission_classes((IsAuthenticated,))
 def delete_request_by_pk(request, pk):
     request_object = get_request_object(pk)
     check_user_is_creator(request, request_object)
@@ -53,8 +61,8 @@ def delete_request_by_pk(request, pk):
     return Response({"data": {"message": "deleted success"}}, status=status.HTTP_204_NO_CONTENT)
 
 
-@permission_classes((IsAuthenticated,))
 @api_view(['POST'])
+@permission_classes((IsAuthenticated,))
 def end_request(request, pk):
     request_object = get_request_object(pk)
     check_user_is_creator(request, request_object)
