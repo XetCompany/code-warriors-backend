@@ -6,3 +6,5 @@ from .user.views import user_info
 from .files.views import ImageView, VideoView
 
 from .categories.views import get_categories
+
+from .notifications.views import get_user_notifications, read_all_notifications

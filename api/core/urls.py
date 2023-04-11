@@ -21,5 +21,8 @@ urlpatterns = [
     path('video/', views.VideoView.as_view()),
     path('video/<int:pk>/', views.VideoView.as_view()),
 
-    path('user/', views.user_info)
+    path('user/', views.user_info),
+
+    path('notifications/', views.get_user_notifications),
+    path('notifications/read_all/', views.read_all_notifications),
 ]

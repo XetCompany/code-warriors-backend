@@ -15,6 +15,7 @@ class RequestListOrDetailModelViewSet(ModelViewSet):
     serializer_class = RequestListOrDetailSerializer
     permission_classes = [AllowAny]
 
+
 @api_view(['GET'])
 def get_requests_by_user_id(request, user_id):
     requests = Request.objects.filter(creator_id=user_id)
@@ -36,6 +37,8 @@ class RequestCreateOrUpdateModelViewSet(ModelViewSet):
 @permission_classes((IsAuthenticated,))
 def add_response_to_request(request, pk):
     request_object = Request.objects.get(pk=pk)
+    if request.user in request_object.responses.all():
+        return Response({"data": {"message": "Вы уже откликнулись на этот заказ"}}, status=status.HTTP_400_BAD_REQUEST)
     request_object.responses.add(request.user)
 
     creator = request_object.creator
@@ -50,8 +53,8 @@ def add_response_to_request(request, pk):
     return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)
 
 
-@api_view(['DELETE'])
 @permission_classes((IsAuthenticated,))
+@api_view(['DELETE'])
 def delete_request_by_pk(request, pk):
     request_object = get_request_object(pk)
     check_user_is_creator(request, request_object)
@@ -61,8 +64,8 @@ def delete_request_by_pk(request, pk):
     return Response({"data": {"message": "deleted success"}}, status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['POST'])
 @permission_classes((IsAuthenticated,))
+@api_view(['POST'])
 def end_request(request, pk):
     request_object = get_request_object(pk)
     check_user_is_creator(request, request_object)

@@ -15,7 +15,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = ('id', 'user')
+        fields = '__all__'
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'fullname', 'phone', 'description', 'notifications', 'groups')
-        read_only_fields = ('notifications', 'groups')
+        read_only_fields = ('notifications', 'groups', 'id')
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
