@@ -1,9 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from app.models import CategoryRequest, Photo, Video, Request, Notification, User, ResetPasswordToken
+from app.models import CategoryRequest, Photo, Video, Request, Notification, User, ResetPasswordToken, Response, Review
 
 admin.site.register(CategoryRequest)
+admin.site.register(Review)
+admin.site.register(Response)
 admin.site.register(Photo)
 admin.site.register(Video)
 admin.site.register(Request)

@@ -58,8 +58,8 @@ def add_response_to_request(request, pk):
     return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)
 
 
-@permission_classes((IsAuthenticated,))
 @api_view(['DELETE'])
+@permission_classes((IsAuthenticated,))
 def delete_request_by_pk(request, pk):
     request_object = get_request_object(pk)
     check_user_is_creator(request, request_object)
@@ -69,8 +69,8 @@ def delete_request_by_pk(request, pk):
     return Response({"data": {"message": "deleted success"}}, status=status.HTTP_204_NO_CONTENT)
 
 
-@permission_classes((IsAuthenticated,))
 @api_view(['POST'])
+@permission_classes((IsAuthenticated,))
 def end_request(request, pk):
     request_object = get_request_object(pk)
     check_user_is_creator(request, request_object)

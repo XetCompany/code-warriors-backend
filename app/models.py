@@ -5,6 +5,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 class CategoryRequest(models.Model):
     """Категория запроса"""
@@ -49,6 +51,7 @@ class Video(models.Model):
 
 
 class Response(models.Model):
+    """Отлик"""
     user = models.ForeignKey(verbose_name='Пользователь', to='User', on_delete=models.CASCADE)
     description = models.TextField(verbose_name='Описание', blank=True, null=True)
     photos = models.ManyToManyField(verbose_name='Фотографии', to='Photo', blank=True)
@@ -106,6 +109,27 @@ class Notification(models.Model):
         return f'{self.user.username} <{self.message}>'
 
 
+class Review(models.Model):
+    """Отзыв"""
+    sender = models.ForeignKey(verbose_name='Отправитель', to='User', on_delete=models.CASCADE,
+                               related_name='sender_user')
+    host = models.ForeignKey(verbose_name='О ком отзыв', to='User', on_delete=models.CASCADE,
+                             related_name='host_user')
+    review_text = models.TextField(verbose_name='Текст отзыва', blank=True, null=True)
+    rating = models.IntegerField(verbose_name='Оценка', validators=[
+        MinValueValidator(1), MaxValueValidator(5)], default=1)
+
+    published_date = models.DateTimeField(verbose_name='Дата публикации', auto_now_add=True)
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+
+    def __str__(self):
+        return f'Отзыв от {self.sender.username} для {self.host.username}'
+
+
 class User(AbstractUser):
     """Пользователь способный пройти авторизацию либо регистрацию по логину либо e-mail'у"""
     username = models.CharField(verbose_name='Логин', max_length=255, unique=True)
@@ -115,11 +139,18 @@ class User(AbstractUser):
     description = models.TextField(verbose_name='Описание', max_length=255, blank=True, null=True)
 
     notifications = models.ManyToManyField(verbose_name='Уведомления', to=Notification,
-                                           related_name='notification')
+                                           related_name='notification', blank=True)
 
     def add_group(self, group_name):
         group = Group.objects.get(name=group_name)
         self.groups.add(group)
+
+    def get_avg_rating(self):
+        reviews = Review.objects.filter(host=self)
+        if reviews:
+            ratings_num = sum([i.rating for i in reviews])
+            return ratings_num / len(reviews)
+        return 0
 
     class Meta:
         ordering = ('id',)
@@ -127,7 +158,7 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return f'id: {self.id}, log: {self.username}'
+        return f'id: {self.id}, login: {self.username}'
 
 
 class ResetPasswordToken(models.Model):
