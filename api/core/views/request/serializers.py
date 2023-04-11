@@ -2,7 +2,15 @@ from rest_framework import serializers
 
 from api.core.views.request.utils.request import check_executor, check_creator, check_category
 from api.core.views.user.serializers import UserSerializer
-from app.models import Request
+from app.models import Request, Response
+
+
+class ResponseSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Response
+        fields = '__all__'
 
 
 class RequestListOrDetailSerializer(serializers.ModelSerializer):
@@ -13,7 +21,7 @@ class RequestListOrDetailSerializer(serializers.ModelSerializer):
     photos = serializers.SerializerMethodField()
     videos = serializers.SerializerMethodField()
 
-    responses = UserSerializer(many=True)
+    responses = ResponseSerializer(many=True)
 
     class Meta:
         model = Request

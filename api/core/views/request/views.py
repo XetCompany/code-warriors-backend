@@ -3,7 +3,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.core.views.request.serializers import RequestListOrDetailSerializer, RequestCreateOrUpdateSerializer
+from api.core.views.request.serializers import RequestListOrDetailSerializer, RequestCreateOrUpdateSerializer, \
+    ResponseSerializer
 from api.core.views.request.utils.request import get_request_object, check_user_is_creator
 from app.models import Request, Notification
 
@@ -39,16 +40,20 @@ def add_response_to_request(request, pk):
     request_object = Request.objects.get(pk=pk)
     if request.user in request_object.responses.all():
         return Response({"data": {"message": "Вы уже откликнулись на этот заказ"}}, status=status.HTTP_400_BAD_REQUEST)
-    request_object.responses.add(request.user)
 
-    creator = request_object.creator
+    data = request.data
+    data['user'] = request.user.id
+    response = ResponseSerializer(data=data)
+    response.is_valid(raise_exception=True)
+    response_object = response.save()
+
+    request_object.responses.add(response_object)
 
     notification = Notification.objects.create(
-        user=creator,
+        user=request_object.creator,
         message=f'{request.user.username} откликнулся на ваш заказ'
     )
-
-    creator.notifications.add(notification)
+    request_object.creator.notifications.add(notification)
 
     return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)
 
