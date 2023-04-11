@@ -21,6 +21,10 @@ class RequestCreateOrUpdateModelViewSet(ModelViewSet):
     serializer_class = RequestCreateOrUpdateSerializer
     permission_classes = [IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        request.data['creator'] = request.user.id
+        return super().create(request, *args, **kwargs)
+
 
 @api_view(['POST'])
 def add_response_to_request(request, pk):

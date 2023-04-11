@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
@@ -9,6 +9,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 class CategoryRequest(models.Model):
     """Категория запроса"""
     name = models.CharField(verbose_name='Название категории', max_length=255)
+
+    def get_category_display(self):
+        return self.name
 
     class Meta:
         ordering = ('id',)
@@ -106,6 +109,10 @@ class User(AbstractUser):
 
     notifications = models.ManyToManyField(verbose_name='Уведомления', to=Notification,
                                            related_name='notification')
+
+    def add_group(self, group_name):
+        group = Group.objects.get(name=group_name)
+        self.groups.add(group)
 
     class Meta:
         ordering = ('id',)

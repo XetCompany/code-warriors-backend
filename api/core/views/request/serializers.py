@@ -8,6 +8,11 @@ from app.models import Request
 class RequestListOrDetailSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField()
     executor = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+
+    photos = serializers.SerializerMethodField()
+    videos = serializers.SerializerMethodField()
+
     responses = UserSerializer(many=True)
 
     class Meta:
@@ -21,6 +26,15 @@ class RequestListOrDetailSerializer(serializers.ModelSerializer):
             'id': creator_id,
             'username': creator_username,
         }
+
+    def get_photos(self, obj):
+        return obj.photos.values_list('photo', flat=True)
+
+    def get_videos(self, obj):
+        return obj.videos.values_list('video', flat=True)
+
+    def get_category(self, obj):
+        return obj.category.name
 
     def get_executor(self, obj):
         executor_id, executor_username = check_executor(obj)

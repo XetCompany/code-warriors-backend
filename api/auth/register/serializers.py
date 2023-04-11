@@ -10,9 +10,11 @@ class RegisterSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
     password = serializers.CharField(max_length=255, write_only=True)
 
+    role = serializers.CharField(max_length=255, write_only=True)
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'password')
+        fields = ('username', 'email', 'password', 'role')
 
     def validate_username(self, value):
         if self.Meta.model.objects.filter(username=value).exists():
@@ -28,6 +30,14 @@ class RegisterSerializer(serializers.Serializer):
         django_validate_password(value)
         return value
 
+    def validate_role(self, value):
+        if value not in ['customer', 'performer']:
+            raise serializers.ValidationError('Неверный тип пользователя')
+        return value
+
     def create(self, validated_data):
+        role = validated_data.pop('role')
         user = User.objects.create_user(**validated_data)
+        user.add_group(role)
+
         return user

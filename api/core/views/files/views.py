@@ -7,6 +7,7 @@ from app.models import Photo, Video
 
 class BaseFileView(APIView):
     model_class = None
+    name_field = None
 
     def get_file(self, file_id):
         try:
@@ -16,23 +17,27 @@ class BaseFileView(APIView):
         return file
 
     def create_file(self, file):
-        file = self.model_class.objects.create(file=file)
+        args = {self.name_field: file}
+        file = self.model_class.objects.create(**args)
         return file
 
     def get(self, request, *args, **kwargs):
         file_id = kwargs.get('pk')
         file = self.get_file(file_id)
-        return Response({"data": {"file": file}})
+        url = getattr(file, self.name_field).url
+        return Response({"data": {"file": url}})
 
     def post(self, request, *args, **kwargs):
         file = request.FILES.get('file')
         image = self.create_file(file)
-        return Response({"data": {"files": image}})
+        return Response({self.name_field: image.id}, status=201)
 
 
 class ImageView(BaseFileView):
     model_class = Photo
+    name_field = 'photo'
 
 
 class VideoView(BaseFileView):
     model_class = Video
+    name_field = 'video'

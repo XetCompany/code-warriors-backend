@@ -9,6 +9,7 @@ admin.site.register(Video)
 admin.site.register(Request)
 admin.site.register(Notification)
 
+
 class CustomUserAdmin(UserAdmin):
     """ Кастомное отоброжение модели юзера в бд"""
     model = User
@@ -22,7 +23,9 @@ class CustomUserAdmin(UserAdmin):
             'phone',
             'description',
             'notifications',
-            'password')
+            'password',
+            'groups',
+        )
         }),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
