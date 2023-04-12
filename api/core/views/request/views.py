@@ -3,7 +3,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.core.views.categories.serializers import CategoryRequestSerializer
 from api.core.views.request.serializers import RequestListOrDetailSerializer, RequestCreateOrUpdateSerializer, \
     ResponseSerializer
 from api.core.views.request.utils.request import get_request_object, check_user_is_creator
@@ -138,5 +137,3 @@ def get_requests_by_category(request, **kwargs):
     categories = Request.objects.filter(category=category)
     serializer = RequestListOrDetailSerializer(categories, many=True)
     return Response({'data': serializer.data}, status=status.HTTP_200_OK)
-
-
