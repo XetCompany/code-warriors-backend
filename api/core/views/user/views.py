@@ -21,7 +21,7 @@ def user_info(request):
 
 
 @api_view(['GET'])
-def get_user_by_chosen_categories(request):
+def get_users_by_chosen_categories(request):
     categories = request.data.get('categories', [])
     users = User.objects.filter(chosen_categories__id__in=categories)
     serializer = UserDetailSerializer(users, many=True)

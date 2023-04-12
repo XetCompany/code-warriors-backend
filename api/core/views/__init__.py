@@ -3,7 +3,7 @@ from .request.views import add_response_to_request, delete_request_by_pk, end_re
 from .request.views import add_response_to_request, delete_request_by_pk, end_request, get_requests_by_user_id
 from .request.views import accept_response_for_request, complete_request
 
-from .user.views import user_info, get_user_by_chosen_categories
+from .user.views import user_info, get_users_by_chosen_categories
 
 from .files.views import ImageView, VideoView
 
