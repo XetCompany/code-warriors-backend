@@ -3,10 +3,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from api.core.views.categories.serializers import CategoryRequestSerializer
 from api.core.views.request.serializers import RequestListOrDetailSerializer, RequestCreateOrUpdateSerializer, \
     ResponseSerializer
 from api.core.views.request.utils.request import get_request_object, check_user_is_creator
-from app.models import Request, Notification
+from app.models import Request, Notification, CategoryRequest
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
@@ -79,3 +80,17 @@ def end_request(request, pk):
     request_object.save()
 
     return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+def get_requests_by_category(request, **kwargs):
+    category_name = request.GET.get('category')
+    category = CategoryRequest.objects.filter(name=category_name).first()
+    if not category:
+        return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    categories = Request.objects.filter(category=category)
+    serializer = RequestListOrDetailSerializer(categories, many=True)
+    return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+
+

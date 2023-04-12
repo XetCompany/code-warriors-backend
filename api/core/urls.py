@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('request/<int:pk>/add_response/', views.add_response_to_request),
     path('request/end/<int:pk>/', views.end_request),
+    path('request/category/', views.get_requests_by_category),
 
     path('image/', views.ImageView.as_view()),
     path('image/<int:pk>/', views.ImageView.as_view()),
@@ -28,7 +29,7 @@ urlpatterns = [
 
     path('rating/', views.rating_of_users),
 
-    path('reviews/<int:user_id>/', views.ReviewListAPIView.as_view(), name='review-list'),
+    path('reviews/list/<int:user_id>/', views.ReviewListAPIView.as_view(), name='review-list'),
     path('reviews/create/', views.ReviewCreateAPIView.as_view(), name='review-create'),
-    path('reviews/l/<int:id>/', views.ReviewRetrieveUpdateDestroyAPIView.as_view(), name='review-detail'),
+    path('reviews/<int:id>/', views.ReviewRetrieveUpdateDestroyAPIView.as_view(), name='review-detail'),
 ]
