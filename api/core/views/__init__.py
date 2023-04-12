@@ -1,5 +1,7 @@
 from .request.views import RequestListOrDetailModelViewSet, RequestCreateOrUpdateModelViewSet
 from .request.views import add_response_to_request, delete_request_by_pk, end_request, get_requests_by_user_id, get_requests_by_category
+from .request.views import add_response_to_request, delete_request_by_pk, end_request, get_requests_by_user_id
+from .request.views import accept_response_for_request, complete_request
 
 from .user.views import user_info
 

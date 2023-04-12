@@ -9,6 +9,9 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username')
 
+    def to_internal_value(self, data):
+        return User.objects.get(id=data)
+
 
 class NotificationSerializer(serializers.ModelSerializer):
     user = UserSerializer()

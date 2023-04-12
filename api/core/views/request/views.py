@@ -7,9 +7,12 @@ from api.core.views.categories.serializers import CategoryRequestSerializer
 from api.core.views.request.serializers import RequestListOrDetailSerializer, RequestCreateOrUpdateSerializer, \
     ResponseSerializer
 from api.core.views.request.utils.request import get_request_object, check_user_is_creator
+from app.models import Request, Notification, User
 from app.models import Request, Notification, CategoryRequest
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
+
+from utils.data import get_data_value
 
 
 class RequestListOrDetailModelViewSet(ModelViewSet):
@@ -33,6 +36,49 @@ class RequestCreateOrUpdateModelViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         request.data['creator'] = request.user.id
         return super().create(request, *args, **kwargs)
+
+
+@api_view(['POST'])
+def complete_request(request, request_id):
+    request_object = get_request_object(request_id)
+    check_user_is_creator(request, request_object)
+
+    request_object.is_active = False
+    request_object.save()
+
+    notification = Notification.objects.create(
+        user=request_object.executor,
+        message=f'Заказ {request_object.title} был выполнен'
+    )
+    request_object.executor.notifications.add(notification)
+
+    return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def accept_response_for_request(request, request_id):
+    request_object = get_request_object(request_id)
+    check_user_is_creator(request, request_object)
+
+    if request_object.executor:
+        return Response({"data": {"message": "Вы уже выбрали исполнителя"}}, status=status.HTTP_400_BAD_REQUEST)
+
+    user_id = get_data_value(request, 'user_id')
+    user = User.objects.get(pk=user_id)
+    response = request_object.responses.get(user=user)
+
+    request_object.executor = response.user
+    request_object.save()
+
+    request_object.responses.all().delete()
+
+    notification = Notification.objects.create(
+        user=response.user,
+        message=f'Ваш отклик на заказ {request_object.title} был принят'
+    )
+    response.user.notifications.add(notification)
+
+    return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])

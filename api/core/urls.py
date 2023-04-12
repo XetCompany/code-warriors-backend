@@ -5,6 +5,8 @@ from . import views
 urlpatterns = [
     path('requests/', views.RequestListOrDetailModelViewSet.as_view({'get': 'list'})),
     path('requests/<int:user_id>/', views.get_requests_by_user_id),
+    path('request/<int:request_id>/accept_response/', views.accept_response_for_request),
+    path('request/<int:request_id>/complete/', views.complete_request),
     path('request/detail/<int:pk>/', views.RequestListOrDetailModelViewSet.as_view({'get': 'retrieve'})),
     path('request/create/', views.RequestCreateOrUpdateModelViewSet.as_view({'post': 'create'})),
     path('request/update/<int:pk>/', views.RequestCreateOrUpdateModelViewSet.as_view({'put': 'update'})),

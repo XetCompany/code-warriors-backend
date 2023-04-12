@@ -6,7 +6,7 @@ from app.models import Request, Response
 
 
 class ResponseSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(required=False)
 
     class Meta:
         model = Response
