@@ -51,6 +51,26 @@ def complete_request(request, request_id):
     )
     request_object.executor.notifications.add(notification)
 
+    notification = Notification.objects.create(
+        user=request_object.creator,
+        message=f'Поставьте оценку исполнителю {request_object.executor.username}',
+        action='rating',
+        action_data={
+            'user_id': request_object.executor.id,
+        }
+    )
+    request_object.creator.notifications.add(notification)
+
+    notification = Notification.objects.create(
+        user=request_object.executor,
+        message=f'Поставьте оценку заказчику {request_object.creator.username}',
+        action='rating',
+        action_data={
+            'user_id': request_object.creator.id,
+        }
+    )
+    request_object.executor.notifications.add(notification)
+
     return Response({"data": {"message": "success"}}, status=status.HTTP_201_CREATED)
 
 

@@ -97,6 +97,8 @@ class Notification(models.Model):
     user = models.ForeignKey(verbose_name='Пользователь', to='User',
                              on_delete=models.CASCADE)
     message = models.CharField(verbose_name='Сообщение', max_length=255)
+    action = models.CharField(verbose_name='Действие', max_length=255, blank=True, null=True, default='')
+    action_data = models.JSONField(verbose_name='Данные действия', blank=True, null=True, default=dict)
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     is_read = models.BooleanField(verbose_name='Прочитано', default=False)
 
@@ -137,6 +139,10 @@ class User(AbstractUser):
     fullname = models.CharField(verbose_name='ФИО', max_length=255, blank=True, null=True)
     phone = PhoneNumberField(verbose_name='Телефон', blank=True, null=True, default=None)
     description = models.TextField(verbose_name='Описание', max_length=255, blank=True, null=True)
+
+    chosen_categories = models.ManyToManyField(verbose_name='Выбранные категории', to='CategoryRequest', blank=True)
+    photos = models.ManyToManyField(verbose_name='Фотографии', to='Photo', blank=True)
+    videos = models.ManyToManyField(verbose_name='Видео', to='Video', blank=True)
 
     notifications = models.ManyToManyField(verbose_name='Уведомления', to=Notification,
                                            related_name='notification', blank=True)

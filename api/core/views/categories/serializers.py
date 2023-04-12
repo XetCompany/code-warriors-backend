@@ -7,3 +7,6 @@ class CategoryRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryRequest
         fields = '__all__'
+
+    def to_internal_value(self, data):
+        return CategoryRequest.objects.get(id=data)
