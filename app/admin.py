@@ -25,6 +25,9 @@ class CustomUserAdmin(UserAdmin):
             'fullname',
             'phone',
             'description',
+            'chosen_categories',
+            'photos',
+            'videos',
             'notifications',
             'password',
             'groups',
@@ -42,9 +45,12 @@ class CustomUserAdmin(UserAdmin):
                 'fullname',
                 'phone',
                 'description',
+                'chosen_categories',
+                'photos',
+                'videos',
+                'notifications',
                 'password1',
                 'password2',
-                'notifications',
                 'is_staff',
                 'is_active'
             )
