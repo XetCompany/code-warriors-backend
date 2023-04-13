@@ -43,7 +43,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'email', 'fullname',
                   'phone', 'description', 'notifications',
-                  'chosen_categories', 'photos', 'videos')
+                  'chosen_categories', 'photos', 'videos',
+                  'is_buy_update')
 
     def update(self, instance, validated_data):
         chosen_categories = validated_data.pop('chosen_categories', [])
@@ -67,10 +68,13 @@ class UserDetailSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'email', 'fullname',
                   'phone', 'description', 'notifications',
-                  'groups', 'id', 'chosen_categories', 'photos', 'videos')
-        read_only_fields = ('notifications', 'groups', 'id')
+                  'groups', 'id', 'chosen_categories', 'photos', 'videos',
+                  'is_buy_update')
+        read_only_fields = ('notifications', 'groups', 'id',
+                            'is_buy_update')
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['groups'] = Group.objects.filter(user=instance).values_list('name', flat=True)
+        representation['rating'] = instance.get_avg_rating()
         return representation

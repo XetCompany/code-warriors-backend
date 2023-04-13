@@ -22,7 +22,13 @@ class RequestListOrDetailModelViewSet(ModelViewSet):
 
 @api_view(['GET'])
 def get_requests_by_user_id(request, user_id):
-    requests = Request.objects.filter(creator_id=user_id)
+    user = User.objects.get(id=user_id)
+    if 'customer' in user.groups.all().values_list('name', flat=True):
+        requests = Request.objects.filter(creator_id=user_id)
+    elif 'performer' in user.groups.all().values_list('name', flat=True):
+        requests = Request.objects.filter(executor_id=user_id)
+    else:
+        return Response({"data": {"message": "error"}}, status=status.HTTP_400_BAD_REQUEST)
     serializer = RequestListOrDetailSerializer(requests, many=True)
     return Response({"data": serializer.data}, status=status.HTTP_200_OK)
 

@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from app.models import CategoryRequest, Photo, Video, Request, Notification, User, ResetPasswordToken, Response, Review
+from app.models import CategoryRequest, Photo, Video, Request, Notification, User, ResetPasswordToken, Response, Review, \
+    Message
 
 admin.site.register(CategoryRequest)
 admin.site.register(Review)
@@ -11,6 +12,7 @@ admin.site.register(Video)
 admin.site.register(Request)
 admin.site.register(Notification)
 admin.site.register(ResetPasswordToken)
+admin.site.register(Message)
 
 
 class CustomUserAdmin(UserAdmin):
@@ -31,6 +33,8 @@ class CustomUserAdmin(UserAdmin):
             'notifications',
             'password',
             'groups',
+            'is_buy_update',
+            'buy_update_to'
         )
         }),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
@@ -52,7 +56,9 @@ class CustomUserAdmin(UserAdmin):
                 'password1',
                 'password2',
                 'is_staff',
-                'is_active'
+                'is_active',
+                'is_buy_update',
+                'buy_update_to'
             )
         }),
     )

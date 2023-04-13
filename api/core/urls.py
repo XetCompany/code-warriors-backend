@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
@@ -25,6 +25,7 @@ urlpatterns = [
     path('video/<int:pk>/', views.VideoView.as_view()),
 
     path('user/', views.user_info),
+    path('user/<int:user_id>/', views.get_user_by_id),
     path('user_by_categories/', views.get_users_by_chosen_categories),
 
     path('notifications/', views.get_user_notifications),
@@ -35,4 +36,6 @@ urlpatterns = [
     path('reviews/list/<int:user_id>/', views.ReviewListAPIView.as_view(), name='review-list'),
     path('reviews/create/', views.ReviewCreateAPIView.as_view(), name='review-create'),
     path('reviews/<int:id>/', views.ReviewRetrieveUpdateDestroyAPIView.as_view(), name='review-detail'),
+
+    path('messenger/', include('api.core.views.chat.urls'))
 ]

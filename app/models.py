@@ -147,6 +147,9 @@ class User(AbstractUser):
     notifications = models.ManyToManyField(verbose_name='Уведомления', to=Notification,
                                            related_name='notification', blank=True)
 
+    is_buy_update = models.BooleanField(verbose_name='Купил ли улучшение', default=False)
+    buy_update_to = models.DateTimeField(verbose_name='Купил до', blank=True, null=True, default=None)
+
     def add_group(self, group_name):
         group = Group.objects.get(name=group_name)
         self.groups.add(group)
@@ -158,6 +161,13 @@ class User(AbstractUser):
             return ratings_num / len(reviews)
         return 0
 
+    def is_expired_update(self):
+        future_time = self.buy_update_to
+        now_time = datetime.now(tz=None) - timedelta(hours=3)
+        now_time = now_time.replace(tzinfo=None)
+        future_time = future_time.replace(tzinfo=None)
+        return now_time > future_time
+
     class Meta:
         ordering = ('id',)
         verbose_name = 'Пользователь'
@@ -165,6 +175,27 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'id: {self.id}, login: {self.username}'
+
+
+class Message(models.Model):
+    """Сообщение"""
+    sender = models.ForeignKey(verbose_name='Отправитель', to='User', on_delete=models.CASCADE,
+                               related_name='sender')
+    receiver = models.ForeignKey(verbose_name='Получатель', to='User', on_delete=models.CASCADE,
+                                 related_name='receiver')
+    type = models.CharField(verbose_name='Тип', max_length=255, default='text')
+    other_data = models.JSONField(verbose_name='Другие данные', blank=True, null=True, default=dict)
+    message = models.TextField(verbose_name='Сообщение')
+    created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
+    is_read = models.BooleanField(verbose_name='Прочитано', default=False)
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Сообщения'
+
+    def __str__(self):
+        return f'Сообщение от {self.sender.username} для {self.receiver.username}'
 
 
 class ResetPasswordToken(models.Model):
